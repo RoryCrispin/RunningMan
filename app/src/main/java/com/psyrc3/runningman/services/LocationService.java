@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.psyrc3.runningman.activities.SaveActivity;
+
 import org.osmdroid.util.GeoPoint;
 
 import java.util.List;
@@ -78,7 +80,7 @@ public class LocationService extends Service implements LocationListener {
                 path.addPoint(location);
                 // Update the notification to reflect activity progress
                 notificationManager.notify(noticationID, notificationHelper.recordingNotification(this,
-                        path.getPace(), path.getDistance()));
+                        path.getRecentAvgPace(), path.getDistance()));
             }
             // Notify bound activities of new location
             if (lsCallbacks != null)
@@ -116,14 +118,28 @@ public class LocationService extends Service implements LocationListener {
         isRecording = true;
     }
 
-    public String stopRecording() {
+    public void stopRecording() {
         isRecording = false;
         locationManager.removeUpdates(this);
-        return "";
+        Intent i = new Intent(this, SaveActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
     }
 
     public double getPace() {
-        return path.getPace();
+        return path.getRecentAvgPace();
+    }
+
+    public double getDistance() {
+        return path.getDistance();
+    }
+
+    public double getAvgPace() {
+        return path.getAvgPace();
+    }
+
+    public List<Double> getIncrementalPace() {
+        return path.getIncrementalPace();
     }
 
     public interface LocationServiceCallbacks {

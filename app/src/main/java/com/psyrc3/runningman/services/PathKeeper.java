@@ -2,7 +2,6 @@ package com.psyrc3.runningman.services;
 
 
 import android.location.Location;
-import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -27,18 +26,6 @@ public class PathKeeper {
         return distance;
     }
 
-    public double getPace() {
-        if (path.size() > 4) {
-            TimedPoint lastPoint = path.get(path.size() - 1);
-            TimedPoint oldPoint = path.get(path.size() - 3);
-            double distanceFromPoint = oldPoint.loc.distanceTo(lastPoint.loc);
-            double timeBetween = lastPoint.time - oldPoint.time;
-
-            return 16.666667 / (distanceFromPoint / timeBetween) / 1000;
-        }
-        Log.d("G53MDP", "path size too small");
-        return 0;
-    }
 
     public long getTimeElapsed() {
         if (!path.isEmpty()) {
@@ -53,4 +40,43 @@ public class PathKeeper {
         }
         return list;
     }
+
+    public double getRecentAvgPace() {
+        if (path.size() > 4) {
+            TimedPoint lastPoint = path.get(path.size() - 1);
+            TimedPoint oldPoint = path.get(path.size() - 3);
+            return getPace(oldPoint, lastPoint);
+        }
+        return 0;
+    }
+
+    public double getAvgPace() {
+        if (path.size() > 1) {
+            TimedPoint lastPoint = path.get(path.size() - 1);
+            TimedPoint oldPoint = path.get(0);
+            return getPace(oldPoint, lastPoint);
+        }
+        return 0;
+    }
+
+    private double getPace(TimedPoint first, TimedPoint second) {
+        double distanceFromPoint = first.loc.distanceTo(second.loc);
+        double timeBetween = second.time - first.time;
+
+        return 16.666667 / (distanceFromPoint / timeBetween) / 1000;
+    }
+
+    public List<Double> getIncrementalPace() {
+        List<Double> list = new ArrayList<>();
+        int i = 1;
+        for (TimedPoint e1 : path) {
+            if (i < path.size()) {
+                list.add(getPace(e1, path.get(i)));
+                i++;
+            }
+        }
+        return list;
+    }
+
+
 }

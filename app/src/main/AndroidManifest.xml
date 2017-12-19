@@ -27,7 +27,10 @@
 
         <service android:name=".services.LocationService" />
 
-        <activity android:name=".SaveActivity"></activity>
+        <activity android:name=".activities.SaveActivity" />
+        <activity
+            android:name=".activities.ActivityProperties"
+            android:theme="@style/Theme.AppCompat.Dialog.Alert" />
     </application>
 
 </manifest>

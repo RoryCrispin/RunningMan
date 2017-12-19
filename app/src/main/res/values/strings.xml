@@ -2,5 +2,5 @@
     <string name="app_name">RunningMan</string>
     <string name="stop">Stop</string>
     <string name="begin_activity">Begin Activity</string>
-    <string name="pause_activity">PAUSE</string>
+    <string name="stop_activity">STOP ACTIVITY</string>
 </resources>

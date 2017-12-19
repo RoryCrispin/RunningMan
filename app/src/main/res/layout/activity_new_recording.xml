@@ -16,8 +16,33 @@
     </org.osmdroid.views.MapView>
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="194dp"
+            android:layout_height="74dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:rotation="180"
+            android:scaleType="fitXY"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_semicircle" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="77dp"
+            android:layout_marginTop="-15dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
+            app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+            app:layout_constraintStart_toStartOf="@+id/constraintLayout"
+            app:layout_constraintTop_toTopOf="@+id/startStop_tb"
+            app:srcCompat="@drawable/ic_basebar" />
 
         <TextView
             android:id="@+id/pace_tv"
@@ -25,16 +50,25 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="0 min/km"
+            android:text="-:-- min/km"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/button" />
+            app:layout_constraintEnd_toStartOf="@+id/startStop_tb"
+            app:layout_constraintTop_toTopOf="@+id/startStop_tb" />
+
+        <TextView
+            android:id="@+id/distance_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:text="0 km"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/startStop_tb"
+            app:layout_constraintTop_toTopOf="@+id/startStop_tb" />
+
 
         <ToggleButton
-            android:id="@+id/button"
+            android:id="@+id/startStop_tb"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,23 +77,28 @@
             android:layout_marginStart="8dp"
             android:onClick="beginClicked"
             android:textOff="@string/begin_activity"
-            android:textOn="@string/pause_activity"
+            android:textOn="@string/stop_activity"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+
         <TextView
-            android:id="@+id/distance_tv"
+            android:id="@+id/time_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:text="0 km"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="8dp"
+            android:text="00:00:00"
+            android:textAppearance="@android:style/TextAppearance.Material.Headline"
+            android:textColor="@color/colorAccent"
+            android:textSize="36sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/button"
-            app:layout_constraintTop_toTopOf="@+id/button" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

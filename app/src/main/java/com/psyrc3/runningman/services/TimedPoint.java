@@ -15,4 +15,8 @@ public class TimedPoint {
         this.time = time;
         this.loc = loc;
     }
+
+    public long getTimeSince() {
+        return System.currentTimeMillis() - this.time;
+    }
 }

@@ -11,13 +11,20 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import org.osmdroid.util.GeoPoint;
+
+import java.util.List;
 
 
 public class LocationService extends Service implements LocationListener {
     final int noticationID = 0x118118;
     private final IBinder mBinder = new LocationBinder();
+    boolean isRecording;
+    LocationManager locationManager;
+    NotificationHelper notificationHelper;
+    NotificationManager notificationManager;
     private boolean activityIsSubscribed = false;
     private PathKeeper path;
     private LocationServiceCallbacks lsCallbacks;
@@ -32,11 +39,12 @@ public class LocationService extends Service implements LocationListener {
     public void onCreate() {
         super.onCreate();
         path = new PathKeeper();
-        NotificationHelper notificationHelper = new NotificationHelper();
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationHelper = new NotificationHelper();
         startForeground(noticationID,
                 notificationHelper.generateNotification(this,
-                        "RunningMan", "Not recording"));
-        LocationManager locationManager =
+                        "Not recording"));
+        locationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         //TODO: Check permissions!
@@ -57,10 +65,24 @@ public class LocationService extends Service implements LocationListener {
     }
 
     @Override
+    public boolean onUnbind(Intent i) {
+        lsCallbacks = null;
+        Log.d("G53MDP", "Unbind!");
+        return super.onUnbind(i);
+    }
+
+    @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
-            path.addPoint(location);
-            lsCallbacks.notifyLocationUpdated(new GeoPoint(location), 0, path.getDistance());
+            if (isRecording) {
+                path.addPoint(location);
+                // Update the notification to reflect activity progress
+                notificationManager.notify(noticationID, notificationHelper.recordingNotification(this,
+                        path.getPace(), path.getDistance()));
+            }
+            // Notify bound activities of new location
+            if (lsCallbacks != null)
+                lsCallbacks.notifyLocationUpdated(new GeoPoint(location), 0, path.getDistance());
         }
     }
 
@@ -78,6 +100,32 @@ public class LocationService extends Service implements LocationListener {
 
     }
 
+    public long getTimeElapsed() {
+        return path.getTimeElapsed();
+    }
+
+    public boolean isRecording() {
+        return isRecording;
+    }
+
+    public List<GeoPoint> getPoints() {
+        return path.getGeoPointPath();
+    }
+
+    public void startRecording() {
+        isRecording = true;
+    }
+
+    public String stopRecording() {
+        isRecording = false;
+        locationManager.removeUpdates(this);
+        return "";
+    }
+
+    public double getPace() {
+        return path.getPace();
+    }
+
     public interface LocationServiceCallbacks {
         void notifyLocationUpdated(GeoPoint newLocation, double pace, double distance);
     }
@@ -87,4 +135,5 @@ public class LocationService extends Service implements LocationListener {
             return LocationService.this;
         }
     }
+
 }

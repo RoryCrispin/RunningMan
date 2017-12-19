@@ -26,6 +26,8 @@
         <activity android:name=".activities.NewRecording" />
 
         <service android:name=".services.LocationService" />
+
+        <activity android:name=".SaveActivity"></activity>
     </application>
 
 </manifest>

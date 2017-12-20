@@ -37,7 +37,7 @@ public class ActivityProvider extends ContentProvider {
                         @Nullable String[] strings1, @Nullable String s1) {
         SQLiteDatabase db = activityHelper.getWritableDatabase();
         if (uriMatcher.match(uri) == 0) {
-            Cursor cc = db.rawQuery("SELECT * FROM activities WHERE ID == " + query, null);
+            Cursor cc = db.rawQuery("SELECT * FROM activities WHERE _id == " + query, null);
             cc.moveToFirst();
             return cc;
         } else if (uriMatcher.match(uri) == 1) {
@@ -66,7 +66,7 @@ public class ActivityProvider extends ContentProvider {
             db.execSQL(String.format(Locale.ENGLISH,
                     "INSERT INTO activities " +
                             "(title, date, distance, avgPace, timeElapsed, track, type) " +
-                            "VALUES ('%s', %d, %f, %f, %f, '%s', '%s');",
+                            "VALUES ('%s', %d, %f, %f, %d, '%s', '%s');",
                     entry.title, entry.date, entry.distance, entry.avgPace,
                     entry.timeElapsed, entry.track, entry.type));
             Log.d("G53MDP", "Inserted into db!");

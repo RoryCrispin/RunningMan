@@ -17,82 +17,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TableLayout
-        android:id="@+id/tableLayout"
-        android:layout_width="186dp"
-        android:layout_height="66dp"
+    <com.psyrc3.runningman.activities.components.ActivityDetailTable
+        android:id="@+id/detailsTable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="Avg Pace:"
-                tools:layout_editor_absoluteY="81dp" />
-
-            <TextView
-                android:id="@+id/speed_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="--:-- min/km"
-                android:textColor="@android:color/black"
-                app:layout_constraintTop_toBottomOf="@+id/distance_tv"
-                tools:layout_editor_absoluteX="70dp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Distance:"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="107dp" />
-
-            <TextView
-                android:id="@+id/distance_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="-- km"
-                android:textColor="@android:color/black"
-                tools:layout_editor_absoluteX="70dp"
-                tools:layout_editor_absoluteY="105dp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time:"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="62dp" />
-
-            <TextView
-                android:id="@+id/time_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00:00:00"
-                android:textColor="@android:color/black"
-                app:layout_constraintStart_toEndOf="@+id/textView2"
-                tools:layout_editor_absoluteY="86dp" />
-        </TableRow>
-
-
-    </TableLayout>
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -132,12 +63,14 @@
     </LinearLayout>
 
 
-    <com.jjoe64.graphview.GraphView
+    <com.psyrc3.runningman.activities.components.PaceGraph
         android:id="@+id/graph"
         android:layout_width="match_parent"
         android:layout_height="200dip"
         android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout" />
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

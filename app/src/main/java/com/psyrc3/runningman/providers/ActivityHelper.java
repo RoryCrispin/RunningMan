@@ -18,7 +18,7 @@ public class ActivityHelper extends SQLiteOpenHelper {
                 "date DOUBLE, " +
                 "distance DOUBLE," +
                 "avgpace DOUBLE," +
-                "timeElapsed DOUBLE," +
+                "timeElapsed LONG," +
                 "track TEXT," +
                 "type TEXT);");
     }

@@ -19,7 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.psyrc3.runningman.R;
-import com.psyrc3.runningman.activities.com.psyrc3.runningman.activities.fragments.ListActivityFragment;
+import com.psyrc3.runningman.activities.fragments.ListActivityFragment;
 
 public class ListActivities extends AppCompatActivity {
 

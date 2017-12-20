@@ -16,6 +16,8 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.psyrc3.runningman.ConversionHelper;
 import com.psyrc3.runningman.R;
+import com.psyrc3.runningman.providers.ActivityEntry;
+import com.psyrc3.runningman.providers.ActivityProviderContract;
 import com.psyrc3.runningman.services.LocationService;
 
 import java.util.List;
@@ -94,8 +96,16 @@ public class SaveActivity extends AppCompatActivity {
                 String title = data.getStringExtra("title");
                 String type = data.getStringExtra("type");
                 Log.d("G53MDP", title + type);
+                saveActivity(title, type);
             }
         }
+    }
+
+
+    private void saveActivity(String title, String type) {
+        ActivityEntry activityEntry = new ActivityEntry(title, type, locationService.getPath());
+        getContentResolver().insert(ActivityProviderContract.ACTIVITY_URI,
+                activityEntry.toContentValues());
     }
 
 

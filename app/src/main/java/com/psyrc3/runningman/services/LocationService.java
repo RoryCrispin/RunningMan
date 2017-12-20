@@ -142,6 +142,10 @@ public class LocationService extends Service implements LocationListener {
         return path.getIncrementalPace();
     }
 
+    public PathKeeper getPath() {
+        return path;
+    }
+
     public interface LocationServiceCallbacks {
         void notifyLocationUpdated(GeoPoint newLocation, double pace, double distance);
     }

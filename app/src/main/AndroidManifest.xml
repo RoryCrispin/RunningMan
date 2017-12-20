@@ -16,13 +16,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.Home">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity android:name=".activities.NewRecording" />
 
         <service android:name=".services.LocationService" />
@@ -31,6 +24,26 @@
         <activity
             android:name=".activities.ActivityProperties"
             android:theme="@style/Theme.AppCompat.Dialog.Alert" />
+
+        <provider
+            android:name=".providers.ActivityProvider"
+            android:authorities="com.psyrc3.runningman.providers.ActivityProvider"
+            android:exported="false"
+            android:multiprocess="true" />
+
+        <activity
+            android:name=".activities.ListActivities"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ViewActivity"
+            android:label="@string/title_activity_view"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

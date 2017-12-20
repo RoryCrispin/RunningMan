@@ -22,7 +22,7 @@ public class PathKeeper {
         path.add(new TimedPoint(newPoint));
     }
 
-    double getDistance() {
+    public double getDistance() {
         return distance;
     }
 
@@ -78,5 +78,11 @@ public class PathKeeper {
         return list;
     }
 
+    public long getStartTime() {
+        if (path.size() > 0) {
+            return path.get(0).time;
+        }
+        return 0;
+    }
 
 }

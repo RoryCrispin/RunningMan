@@ -11,9 +11,6 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
-
-import com.psyrc3.runningman.activities.SaveActivity;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -52,6 +49,8 @@ public class LocationService extends Service implements LocationListener {
         //TODO: Check permissions!
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 1, 1, this);
+
+
     }
 
     public void setCallbacks(LocationServiceCallbacks lsCallbacks) {
@@ -69,7 +68,6 @@ public class LocationService extends Service implements LocationListener {
     @Override
     public boolean onUnbind(Intent i) {
         lsCallbacks = null;
-        Log.d("G53MDP", "Unbind!");
         return super.onUnbind(i);
     }
 
@@ -121,9 +119,7 @@ public class LocationService extends Service implements LocationListener {
     public void stopRecording() {
         isRecording = false;
         locationManager.removeUpdates(this);
-        Intent i = new Intent(this, SaveActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
+        notificationManager.cancel(noticationID);
     }
 
     public double getPace() {
@@ -132,14 +128,6 @@ public class LocationService extends Service implements LocationListener {
 
     public double getDistance() {
         return path.getDistance();
-    }
-
-    public double getAvgPace() {
-        return path.getAvgPace();
-    }
-
-    public List<Double> getIncrementalPace() {
-        return path.getIncrementalPace();
     }
 
     public PathKeeper getPath() {

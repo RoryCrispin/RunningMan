@@ -67,20 +67,6 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
         }
     };
 
-    // Resume the UI state from the service
-    private void resumeActivityState() {
-        // Clear the old polyline from the UI and get a fresh copy from the service
-        runningTrackPoints.clear();
-        runningTrackPoints.addAll(locationService.getPoints());
-
-        // Update the time elapsed count so the ui can continue counting.
-        millis = locationService.getTimeElapsed();
-        if (locationService.isRecording()) {
-            startStopwatchThread();
-        }
-        startStopButton.setChecked(locationService.isRecording());
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,9 +84,23 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
         pace_tv = findViewById(R.id.pace_tv);
         time_tv = findViewById(R.id.time_tv);
         startStopButton = findViewById(R.id.startStop_tb);
-
-
     }
+
+    // Resume the UI state from the service
+    private void resumeActivityState() {
+        // Clear the old polyline from the UI and get a fresh copy from the service
+        runningTrackPoints.clear();
+        runningTrackPoints.addAll(locationService.getPoints());
+
+        // Update the time elapsed count so the ui can continue counting.
+        millis = locationService.getTimeElapsed();
+        if (locationService.isRecording()) {
+            startStopwatchThread();
+        }
+        startStopButton.setChecked(locationService.isRecording());
+    }
+
+
 
     private void setupMapView() {
         // Load the mapview and set the tileset to Hike/Bike, set the zoom level
@@ -189,6 +189,10 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
                 if (returnVal == DialogInterface.BUTTON_POSITIVE) {
                     locationService.stopRecording();
                     timer.cancel();
+
+                    //Open the save activity
+                    Intent i = new Intent(getApplicationContext(), SaveActivity.class);
+                    startActivity(i);
                 }
             }
         };

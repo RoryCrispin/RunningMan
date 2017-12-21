@@ -68,15 +68,23 @@ public class SaveActivity extends AppCompatActivity {
         }
     }
 
-
     private void saveActivity(String title, String type) {
         ActivityEntry activityEntry = new ActivityEntry(title, type, locationService.getPath());
         getContentResolver().insert(ActivityProviderContract.ACTIVITY_URI,
                 activityEntry.toContentValues());
+        finishRecording();
+    }
 
+
+    public void discardClicked(View view) {
+        finishRecording();
+    }
+
+    private void finishRecording() {
+        // Stop the service
         Intent service = new Intent(this, LocationService.class);
         stopService(service);
-
+        // Return to the home screen
         Intent i = new Intent(this, ListActivities.class);
         startActivity(i);
     }

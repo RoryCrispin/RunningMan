@@ -3,16 +3,28 @@ package com.psyrc3.runningman.services;
 
 import android.location.Location;
 
+import com.psyrc3.runningman.GPXHelper;
+
 import org.osmdroid.util.GeoPoint;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-public class PathKeeper {
+public class PathKeeper implements Serializable {
 
     double distance;
     double pace;
     private List<TimedPoint> path = new ArrayList<>();
+
+    public PathKeeper() {
+    }
+
+    public PathKeeper(List<TimedPoint> points) {
+        path = points;
+    }
 
     void addPoint(Location newPoint) {
         if (!path.isEmpty()) {
@@ -85,4 +97,13 @@ public class PathKeeper {
         return 0;
     }
 
+    public String reprGPX() {
+        StringBuilder body = new StringBuilder();
+        for (TimedPoint p : path) {
+            body.append(p.reprGPX());
+        }
+        return String.format(Locale.ENGLISH, "%s <trk> <name>RunningManActivity</name><time>%s</time>" +
+                        "<trkseg>%s</trkseg></trk></gpx>", GPXHelper.header,
+                GPXHelper.df.format(new Date(getStartTime())), body.toString());
+    }
 }

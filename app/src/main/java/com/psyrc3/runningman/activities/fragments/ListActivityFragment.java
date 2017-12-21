@@ -44,6 +44,7 @@ public class ListActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_list_activities, container, false);
 
         activity_lv = rootView.findViewById(R.id.activities_lv);
+        activity_lv.setNestedScrollingEnabled(true);
         populateListView(rootView);
 
         activity_lv.setOnItemClickListener(new ListView.OnItemClickListener() {

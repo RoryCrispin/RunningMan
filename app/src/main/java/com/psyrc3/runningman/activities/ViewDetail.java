@@ -3,16 +3,13 @@ package com.psyrc3.runningman.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.psyrc3.runningman.R;
 import com.psyrc3.runningman.activities.components.ActivityDetailTable;
 import com.psyrc3.runningman.providers.ActivityEntry;
-import com.sweetzpot.stravazpot.authenticaton.api.AccessScope;
-import com.sweetzpot.stravazpot.authenticaton.api.ApprovalPrompt;
-import com.sweetzpot.stravazpot.authenticaton.api.StravaLogin;
 import com.sweetzpot.stravazpot.authenticaton.ui.StravaLoginActivity;
 
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -47,21 +44,6 @@ public class ViewDetail extends AppCompatActivity {
         }
     }
 
-    private void setupMapView() {
-        // Load the mapview and set the tileset to Hike/Bike, set the zoom level
-        // and enable pinch, zoom, and pan.
-        mapView = findViewById(R.id.map);
-        mapView.setTileSource(TileSourceFactory.HIKEBIKEMAP);
-        mapView.setMultiTouchControls(true);
-        mapView.getController().setZoom(17);
-        Polyline runningTrackOverlay = new Polyline();
-        final List<GeoPoint> runningTrackPoints = new ArrayList<>();
-        runningTrackPoints.addAll(activityEntry.path.getGeoPointPath());
-        runningTrackOverlay.setPoints(runningTrackPoints);
-        mapView.getOverlays().add(runningTrackOverlay);
-        mapView.getController().setCenter(activityEntry.path.getGeoPointPath().get(0));
-    }
-
     private void updateIUState() {
         ActivityDetailTable detailTable = findViewById(R.id.detailsTable);
         detailTable.setActivity(activityEntry);
@@ -70,6 +52,25 @@ public class ViewDetail extends AppCompatActivity {
         ((TextView) findViewById(R.id.description_tv)).setText(getActivityDescription());
 
         setupMapView();
+    }
+
+    private void setupMapView() {
+        // Load the mapview and set the tileset to Hike/Bike, set the zoom level
+        // and enable pinch, zoom, and pan.
+        mapView = findViewById(R.id.map);
+        mapView.setTileSource(TileSourceFactory.HIKEBIKEMAP);
+        mapView.setMultiTouchControls(true);
+        mapView.getController().setZoom(15);
+
+        //Setup the PolyLine which will display the route of the activity
+        Polyline runningTrackOverlay = new Polyline();
+        final List<GeoPoint> runningTrackPoints = new ArrayList<>();
+        runningTrackPoints.addAll(activityEntry.path.getGeoPointPath());
+        runningTrackOverlay.setPoints(runningTrackPoints);
+        mapView.getOverlays().add(runningTrackOverlay);
+
+        // Center the screen on the activity
+        mapView.getController().setCenter(activityEntry.path.getGeoPointPath().get(0));
     }
 
     private String getActivityDescription() {
@@ -81,22 +82,32 @@ public class ViewDetail extends AppCompatActivity {
     }
 
     public void uploadClicked(View view) {
-        Intent intent = StravaLogin.withContext(this)
-                .withClientID(22149)
-                .withRedirectURI("http://rorycrispin.co.uk")
-                .withApprovalPrompt(ApprovalPrompt.AUTO)
-                .withAccessScope(AccessScope.VIEW_PRIVATE_WRITE)
-                .makeIntent();
-        startActivityForResult(intent, 1001);
+        // If the user has already authenticated, upload the activity, otherwise auth then upload
+        StravaSyncHelper stravaSyncHelper = new StravaSyncHelper();
+        if (stravaSyncHelper.isAuthenticated(this)) {
+            stravaSyncHelper.shareActivity(this, activityEntry);
+        } else {
+            startActivityForResult(stravaSyncHelper.getLoginIntent(this),
+                    StravaSyncHelper.STRAVA_LOGIN_INTENT);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1001 && resultCode == RESULT_OK && data != null) {
-            Log.d("Strava code", data.getStringExtra(StravaLoginActivity.RESULT_CODE));
+        // If the result comes from the strava login, save the auth code and share the activity,
+        // or show an auth failed toast.
+        if (requestCode == StravaSyncHelper.STRAVA_LOGIN_INTENT
+                && resultCode == RESULT_OK && data != null) {
+            StravaSyncHelper stravaSyncHelper = new StravaSyncHelper();
+            stravaSyncHelper.saveAuthCode(this, data.getStringExtra(StravaLoginActivity.RESULT_CODE));
+            stravaSyncHelper.shareActivity(this, activityEntry);
+        } else {
+            if (requestCode == StravaSyncHelper.STRAVA_LOGIN_INTENT) {
+                Toast.makeText(this, "Authentication failed!", Toast.LENGTH_SHORT).show();
+            }
         }
+
     }
 
 

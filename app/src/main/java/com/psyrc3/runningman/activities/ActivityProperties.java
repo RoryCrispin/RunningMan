@@ -12,6 +12,11 @@ import android.widget.Toast;
 
 import com.psyrc3.runningman.R;
 
+/*
+    This activity is used to set the Activity type and name, returning them as Intent Extras.
+    It's displayed as a popup view and used by the Save and Edit workflows.
+ */
+
 public class ActivityProperties extends AppCompatActivity {
 
     EditText title_et;

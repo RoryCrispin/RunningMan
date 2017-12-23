@@ -16,6 +16,15 @@ import org.osmdroid.util.GeoPoint;
 
 import java.util.List;
 
+/*
+    This is the main service used to track user location.
+    Activities wishing to receive location updates may implement the
+    LocationServiceCallbacks interface.
+
+    The service manages it's own notification and keeps it updated with user progress.
+    It stores activities in the PathKeeper class - which stores the location and time
+    of each gps location.
+ */
 
 public class LocationService extends Service implements LocationListener {
     final int noticationID = 0x118118;
@@ -49,8 +58,6 @@ public class LocationService extends Service implements LocationListener {
         //TODO: Check permissions!
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 1, 1, this);
-
-
     }
 
     public void setCallbacks(LocationServiceCallbacks lsCallbacks) {
@@ -89,15 +96,22 @@ public class LocationService extends Service implements LocationListener {
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
     }
-
     @Override
     public void onProviderEnabled(String s) {
-
     }
-
     @Override
     public void onProviderDisabled(String s) {
+    }
 
+    public void startRecording() {
+        isRecording = true;
+    }
+
+    public void stopRecording() {
+        isRecording = false;
+        locationManager.removeUpdates(this);
+        // TODO: not removing notification
+        notificationManager.cancel(noticationID);
     }
 
     public long getTimeElapsed() {
@@ -110,16 +124,6 @@ public class LocationService extends Service implements LocationListener {
 
     public List<GeoPoint> getPoints() {
         return path.getGeoPointPath();
-    }
-
-    public void startRecording() {
-        isRecording = true;
-    }
-
-    public void stopRecording() {
-        isRecording = false;
-        locationManager.removeUpdates(this);
-        notificationManager.cancel(noticationID);
     }
 
     public double getPace() {
@@ -143,5 +147,4 @@ public class LocationService extends Service implements LocationListener {
             return LocationService.this;
         }
     }
-
 }

@@ -75,13 +75,25 @@ public class ActivityProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
+    public int delete(@NonNull Uri uri, @Nullable String id, @Nullable String[] strings) {
+        if (uriMatcher.match(uri) == 0) {
+            SQLiteDatabase db = activityHelper.getWritableDatabase();
+            db.execSQL("DELETE FROM activities WHERE _id =" + id);
+            return 1;
+        }
         return 0;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s,
                       @Nullable String[] strings) {
+        if (uriMatcher.match(uri) == 0) {
+            SQLiteDatabase db = activityHelper.getWritableDatabase();
+            ActivityEntry entry = new ActivityEntry(contentValues);
+            db.execSQL(String.format(Locale.ENGLISH, "UPDATE activities SET title = \"%s\", " +
+                    "type = \"%s\" WHERE _id = %d", entry.title, entry.type, entry.id));
+            return 1;
+        }
         return 0;
     }
 }

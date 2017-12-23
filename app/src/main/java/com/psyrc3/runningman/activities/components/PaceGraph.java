@@ -10,7 +10,14 @@ import com.psyrc3.runningman.services.PathKeeper;
 
 import java.util.List;
 
+/*
+    This class is an extension on the GraphView UI component.
+    The base class was extended to add the setPath method so we can
+    deal with laying out the PathKeeper points in a format compatible
+    with the library in a re-usable way, away from the activity code.
+ */
 public class PaceGraph extends GraphView {
+
     public PaceGraph(Context context) {
         super(context);
     }

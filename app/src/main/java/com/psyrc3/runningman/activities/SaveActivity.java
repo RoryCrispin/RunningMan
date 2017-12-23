@@ -16,6 +16,10 @@ import com.psyrc3.runningman.providers.ActivityEntry;
 import com.psyrc3.runningman.providers.ActivityProviderContract;
 import com.psyrc3.runningman.services.LocationService;
 
+/*
+    This activity is shown after recording an activity. It shows details about the activity and
+    offers the user Saving and Discarding of the activity.
+ */
 public class SaveActivity extends AppCompatActivity {
 
     boolean mBound;
@@ -72,15 +76,19 @@ public class SaveActivity extends AppCompatActivity {
         ActivityEntry activityEntry = new ActivityEntry(title, type, locationService.getPath());
         getContentResolver().insert(ActivityProviderContract.ACTIVITY_URI,
                 activityEntry.toContentValues());
-        finishRecording();
+        closeServiceGoHome();
     }
 
+    @Override
+    public void onBackPressed() {
+        closeServiceGoHome();
+    }
 
     public void discardClicked(View view) {
-        finishRecording();
+        closeServiceGoHome();
     }
 
-    private void finishRecording() {
+    private void closeServiceGoHome() {
         // Stop the service
         Intent service = new Intent(this, LocationService.class);
         stopService(service);
@@ -88,6 +96,5 @@ public class SaveActivity extends AppCompatActivity {
         Intent i = new Intent(this, ListActivities.class);
         startActivity(i);
     }
-
 
 }

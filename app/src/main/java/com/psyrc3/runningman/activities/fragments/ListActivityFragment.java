@@ -21,7 +21,7 @@ import com.psyrc3.runningman.providers.ActivityProviderContract;
 public class ListActivityFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "listActivitySection";
     ListView activity_lv;
-
+    TextView noActivities;
 
     public ListActivityFragment() {
     }
@@ -42,10 +42,10 @@ public class ListActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_list_activities, container, false);
-
+        noActivities = rootView.findViewById(R.id.emptylist_msg);
         activity_lv = rootView.findViewById(R.id.activities_lv);
         activity_lv.setNestedScrollingEnabled(true);
-        populateListView(rootView);
+//        populateListView();
 
         activity_lv.setOnItemClickListener(new ListView.OnItemClickListener() {
 
@@ -63,7 +63,13 @@ public class ListActivityFragment extends Fragment {
         return rootView;
     }
 
-    private void populateListView(View rootView) {
+    @Override
+    public void onResume() {
+        super.onResume();
+        populateListView();
+    }
+
+    private void populateListView() {
 
         Cursor activityCursor = getActivity().getContentResolver().query(ActivityProviderContract.ALL_ACTIVITIES,
                 null, activityType(getArguments().getInt(ARG_SECTION_NUMBER)),
@@ -72,7 +78,6 @@ public class ListActivityFragment extends Fragment {
         activity_lv.setAdapter(activityAdapter);
 
         if (activityCursor.getCount() > 0) {
-            TextView noActivities = rootView.findViewById(R.id.emptylist_msg);
             noActivities.setVisibility(View.INVISIBLE);
         }
     }

@@ -9,7 +9,7 @@ public class ActivityProviderContract {
     public static final Uri ACTIVITY_URI = Uri.parse("content://" + AUTHORITY + "/activity");
     public static final Uri ALL_ACTIVITIES = Uri.parse("content://" + AUTHORITY + "/activities");
 
-    public static final String ID = "id";
+    public static final String ID = "_id";
     public static final String TITLE = "title";
     public static final String DATE = "date";
     public static final String DISTANCE = "distance";

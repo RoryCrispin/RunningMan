@@ -1,5 +1,6 @@
 package com.psyrc3.runningman.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +9,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.psyrc3.runningman.R;
+import com.psyrc3.runningman.StravaSyncHelper;
 import com.psyrc3.runningman.activities.components.ActivityDetailTable;
 import com.psyrc3.runningman.providers.ActivityEntry;
+import com.psyrc3.runningman.providers.ActivityProviderContract;
 import com.sweetzpot.stravazpot.authenticaton.ui.StravaLoginActivity;
 
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -24,6 +27,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/*
+    This activity shows detail about user Activities (runs/walks/rides)
+    and allows them to edit, delete or share them.
+ */
 public class ViewDetail extends AppCompatActivity {
 
     ActivityEntry activityEntry;
@@ -97,18 +104,41 @@ public class ViewDetail extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         // If the result comes from the strava login, save the auth code and share the activity,
         // or show an auth failed toast.
-        if (requestCode == StravaSyncHelper.STRAVA_LOGIN_INTENT
-                && resultCode == RESULT_OK && data != null) {
-            StravaSyncHelper stravaSyncHelper = new StravaSyncHelper();
-            stravaSyncHelper.saveAuthCode(this, data.getStringExtra(StravaLoginActivity.RESULT_CODE));
-            stravaSyncHelper.shareActivity(this, activityEntry);
-        } else {
-            if (requestCode == StravaSyncHelper.STRAVA_LOGIN_INTENT) {
+        if (requestCode == StravaSyncHelper.STRAVA_LOGIN_INTENT) {
+            if (resultCode == RESULT_OK && data != null) {
+                StravaSyncHelper stravaSyncHelper = new StravaSyncHelper();
+                stravaSyncHelper.saveAuthCode(this, data.getStringExtra(StravaLoginActivity.RESULT_CODE));
+                stravaSyncHelper.shareActivity(this, activityEntry);
+            } else {
                 Toast.makeText(this, "Authentication failed!", Toast.LENGTH_SHORT).show();
             }
+        } else if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                String title = data.getStringExtra("title");
+                String type = data.getStringExtra("type");
+                updateActivityProperties(activityEntry, title, type);
+            }
         }
-
     }
 
 
+    public void editClicked(View view) {
+        Intent i = new Intent(this, ActivityProperties.class);
+        startActivityForResult(i, 1);
+    }
+
+    private void updateActivityProperties(ActivityEntry entry, String title, String type) {
+        entry.title = title;
+        entry.type = type;
+        getContentResolver().update(ActivityProviderContract.ACTIVITY_URI,
+                entry.toContentValues(), null, null);
+        updateIUState();
+    }
+
+    public void deleteClicked(View view) {
+        getContentResolver().delete(ActivityProviderContract.ACTIVITY_URI,
+                String.valueOf(activityEntry.id), null);
+        Intent i = new Intent(this, ListActivities.class);
+        startActivity(i);
+    }
 }

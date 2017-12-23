@@ -10,10 +10,9 @@ import android.widget.TextView;
 
 import com.psyrc3.runningman.ConversionHelper;
 
-/**
- * Created by rozz on 20/12/17.
+/*
+    This adapter is used to bind the database results to the ListView on the main activity.
  */
-
 public class ActivityAdapter extends CursorAdapter {
 
     public ActivityAdapter(Context context, Cursor c, int flags) {

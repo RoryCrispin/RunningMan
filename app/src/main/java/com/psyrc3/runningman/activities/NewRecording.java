@@ -4,17 +4,21 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.ToggleButton;
+import android.widget.Toast;
 
 import com.psyrc3.runningman.ConversionHelper;
+import com.psyrc3.runningman.PermissionHelper;
 import com.psyrc3.runningman.R;
 import com.psyrc3.runningman.services.LocationService;
 
@@ -30,6 +34,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/*
+    This activity is the main screen used when recording activitues.
+ */
 
 public class NewRecording extends AppCompatActivity implements LocationService.LocationServiceCallbacks {
     final List<GeoPoint> runningTrackPoints = new ArrayList<>();
@@ -41,7 +48,8 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
     TextView distance_tv, pace_tv, time_tv;
     Timer timer;
     long millis;
-    ToggleButton startStopButton;
+    Button startStopButton;
+
     // Update the UI timer every millisecond.
     // Instead of polling the service every ms, we fetch the current time elapsed whenever we connect
     // to the service and have the timer increment itself on the UI thread for efficiency.
@@ -52,6 +60,7 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
             millis++;
         }
     };
+
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -72,6 +81,11 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recording);
 
+        if (PermissionHelper.checkRequestStoragePermission(this)) {
+            withPermiions();
+        }
+
+
         // Start and bind the service
         Intent serviceIntent = new Intent(this, LocationService.class);
         startService(serviceIntent);
@@ -86,21 +100,30 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
         startStopButton = findViewById(R.id.startStop_tb);
     }
 
-    // Resume the UI state from the service
-    private void resumeActivityState() {
-        // Clear the old polyline from the UI and get a fresh copy from the service
-        runningTrackPoints.clear();
-        runningTrackPoints.addAll(locationService.getPoints());
 
-        // Update the time elapsed count so the ui can continue counting.
-        millis = locationService.getTimeElapsed();
-        if (locationService.isRecording()) {
-            startStopwatchThread();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PermissionHelper.G53MDP_REQUEST_PERMISSION_LOCATION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                withPermiions();
+            } else {
+                Toast.makeText(this, "Location permission required", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
-        startStopButton.setChecked(locationService.isRecording());
+    }
+
+    // TODO: rename
+    void withPermiions() {
+
     }
 
 
+    private void updateButtonState() {
+        startStopButton.setText(locationService.isRecording() ? "Stop Recording" : "Begin Activity");
+    }
 
     private void setupMapView() {
         // Load the mapview and set the tileset to Hike/Bike, set the zoom level
@@ -139,13 +162,28 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
         }
     }
 
+    // Resume the UI state from the service
+    private void resumeActivityState() {
+        // Clear the old polyline from the UI and get a fresh copy from the service
+        runningTrackPoints.clear();
+        runningTrackPoints.addAll(locationService.getPoints());
+
+        // Update the time elapsed count so the ui can continue counting.
+        millis = locationService.getTimeElapsed();
+        if (locationService.isRecording()) {
+            startStopwatchThread();
+        }
+        updateButtonState();
+    }
+
     public void beginClicked(View v) {
-        if (((ToggleButton) v).isChecked()) {
+        if (!locationService.isRecording()) {
             locationService.startRecording();
             startStopwatchThread();
         } else {
             conformStopRecording();
         }
+        updateButtonState();
     }
 
     @Override
@@ -194,6 +232,7 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
                     Intent i = new Intent(getApplicationContext(), SaveActivity.class);
                     startActivity(i);
                 }
+
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

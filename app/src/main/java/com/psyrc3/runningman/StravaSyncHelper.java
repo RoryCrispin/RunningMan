@@ -1,5 +1,4 @@
-package com.psyrc3.runningman.activities;
-
+package com.psyrc3.runningman;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,19 +22,27 @@ import com.sweetzpot.stravazpot.upload.model.UploadActivityType;
 import java.io.File;
 import java.io.OutputStreamWriter;
 
-class StravaSyncHelper {
-    static final int STRAVA_LOGIN_INTENT = 1001;
+/*
+    This class provides Strava syncing functionality to the app using the
+    https://github.com/SweetzpotAS/StravaZpot-Android library.
+    We use sharedPreferences to store API keys and handle the network
+    code away from the UI thread, returning a toast on the UI thread to give
+    the user feedback of the sync results
+ */
+
+public class StravaSyncHelper {
+    public static final int STRAVA_LOGIN_INTENT = 1001;
     private static final String AUTH_CODE = "strava_auth_code";
 
     private static final int CLIENT_ID = 22149;
     private static final String CLIENT_SECRET = "c9aac058cefcc2224bfa803fe0efdcb18869348e";
 
-    boolean isAuthenticated(Activity c) {
+    public boolean isAuthenticated(Activity c) {
         SharedPreferences sharedPreferences = c.getPreferences(Context.MODE_PRIVATE);
         return sharedPreferences.contains(AUTH_CODE);
     }
 
-    Intent getLoginIntent(Context c) {
+    public Intent getLoginIntent(Context c) {
         return StravaLogin.withContext(c)
                 .withClientID(CLIENT_ID)
                 .withRedirectURI("http://rorycrispin.co.uk")
@@ -44,7 +51,9 @@ class StravaSyncHelper {
                 .makeIntent();
     }
 
-    void saveAuthCode(Activity c, String authCode) {
+    public void saveAuthCode(Activity c, String authCode) {
+        // TODO: It would be good in the future to allow users to delete bad tokens from the app
+        // so they can fetch a new one. Also useful to allow the user to change strava user.
         SharedPreferences sharedPreferences = c.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(AUTH_CODE, authCode);
@@ -70,7 +79,7 @@ class StravaSyncHelper {
                 .build();
     }
 
-    void shareActivity(Activity c, final ActivityEntry activityEntry) {
+    public void shareActivity(Activity c, final ActivityEntry activityEntry) {
         final Activity fc = c;
         // Run the network code off from the UI thread so that the UI remains smooth.
         Thread t = new Thread(new Runnable() {

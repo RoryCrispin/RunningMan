@@ -10,7 +10,11 @@ import com.psyrc3.runningman.ConversionHelper;
 import com.psyrc3.runningman.R;
 import com.psyrc3.runningman.activities.NewRecording;
 
-public class NotificationHelper {
+/*
+    This class moves notification generation code away from the service file, keeping it tidy.
+ */
+
+class NotificationHelper {
     Notification generateNotification(Context c, String sub) {
         return new NotificationCompat.Builder(c, "runningman")
                 .setSmallIcon(R.drawable.ic_run_man_black_24dp)

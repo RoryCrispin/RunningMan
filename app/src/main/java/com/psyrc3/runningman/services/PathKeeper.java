@@ -7,19 +7,23 @@ import com.psyrc3.runningman.GPXHelper;
 
 import org.osmdroid.util.GeoPoint;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class PathKeeper implements Serializable {
+/*
+    This path stores activity paths and provides utility functions to calculate pace,
+    distance, time, ect.
+    It keeps a running total of the distance which is incremented with every new point
+    so we don't have to read every single point on every call to getDistance()
+ */
+public class PathKeeper {
 
-    double distance;
-    double pace;
+    private double distance;
     private List<TimedPoint> path = new ArrayList<>();
 
-    public PathKeeper() {
+    PathKeeper() {
     }
 
     public PathKeeper(List<TimedPoint> points) {
@@ -53,7 +57,14 @@ public class PathKeeper implements Serializable {
         return list;
     }
 
-    public double getRecentAvgPace() {
+    private double getPace(TimedPoint first, TimedPoint second) {
+        double distanceFromPoint = first.loc.distanceTo(second.loc);
+        double timeBetween = second.time - first.time;
+
+        return 16.666667 / (distanceFromPoint / timeBetween) / 1000;
+    }
+
+    double getRecentAvgPace() {
         if (path.size() > 4) {
             TimedPoint lastPoint = path.get(path.size() - 1);
             TimedPoint oldPoint = path.get(path.size() - 3);
@@ -71,12 +82,7 @@ public class PathKeeper implements Serializable {
         return 0;
     }
 
-    private double getPace(TimedPoint first, TimedPoint second) {
-        double distanceFromPoint = first.loc.distanceTo(second.loc);
-        double timeBetween = second.time - first.time;
 
-        return 16.666667 / (distanceFromPoint / timeBetween) / 1000;
-    }
 
     public List<Double> getIncrementalPace() {
         List<Double> list = new ArrayList<>();
@@ -97,6 +103,7 @@ public class PathKeeper implements Serializable {
         return 0;
     }
 
+    // Returns a GPX representation of the path.
     public String reprGPX() {
         StringBuilder body = new StringBuilder();
         for (TimedPoint p : path) {

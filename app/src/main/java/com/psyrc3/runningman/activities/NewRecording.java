@@ -81,17 +81,11 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recording);
 
-        if (PermissionHelper.checkRequestStoragePermission(this)) {
-            withPermiions();
+        if (PermissionHelper.checkRequestLocationPermission(this)) {
+            onCreateWithPermissions();
         }
 
 
-        // Start and bind the service
-        Intent serviceIntent = new Intent(this, LocationService.class);
-        startService(serviceIntent);
-        bindService(serviceIntent, mConnection, 0);
-
-        setupMapView();
 
         // Initialise the UI elements
         distance_tv = findViewById(R.id.distance_tv);
@@ -107,7 +101,7 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
         if (requestCode == PermissionHelper.G53MDP_REQUEST_PERMISSION_LOCATION) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                withPermiions();
+                onCreateWithPermissions();
             } else {
                 Toast.makeText(this, "Location permission required", Toast.LENGTH_SHORT).show();
                 finish();
@@ -115,10 +109,16 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
         }
     }
 
-    // TODO: rename
-    void withPermiions() {
+    // 
+    void onCreateWithPermissions() {
+        // Start and bind the service
+        Intent serviceIntent = new Intent(this, LocationService.class);
+        startService(serviceIntent);
+        bindService(serviceIntent, mConnection, 0);
 
+        setupMapView();
     }
+
 
 
     private void updateButtonState() {
@@ -152,7 +152,7 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
     @Override
     protected void onResume() {
         super.onResume();
-        if (!mBound) {
+        if (!mBound && PermissionHelper.isLocationPermissionGrated(this)) {
             Intent serviceIntent = new Intent(this, LocationService.class);
             bindService(serviceIntent, mConnection, 0);
         }

@@ -35,7 +35,7 @@ public class PermissionHelper {
                 == PackageManager.PERMISSION_GRANTED);
     }
 
-    private static boolean isLocationPermissionGrated(Context ctx) {
+    public static boolean isLocationPermissionGrated(Context ctx) {
         return (ContextCompat.checkSelfPermission(ctx,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED);

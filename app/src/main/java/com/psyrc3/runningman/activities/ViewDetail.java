@@ -77,7 +77,10 @@ public class ViewDetail extends AppCompatActivity {
         mapView.getOverlays().add(runningTrackOverlay);
 
         // Center the screen on the activity
-        mapView.getController().setCenter(activityEntry.path.getGeoPointPath().get(0));
+        // TODO crashes for empty paths
+        if (activityEntry.path.getGeoPointPath().size() > 0) {
+            mapView.getController().setCenter(activityEntry.path.getGeoPointPath().get(0));
+        }
     }
 
     private String getActivityDescription() {

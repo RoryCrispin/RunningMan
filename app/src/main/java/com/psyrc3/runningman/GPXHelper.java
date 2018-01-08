@@ -30,7 +30,7 @@ public class GPXHelper {
     private static final String TAG_LON = "lon";
 
     public static PathKeeper parseTrack(String track) throws XmlPullParserException, IOException {
-        // Parse the GPX representation of the track.
+        // Parse the GPX representation of the activity track.
         // This is a naive implementation that just parses our simple subset of the GPX spec,
         // such that we can show a simple map with the user's run on it.
         XmlPullParserFactory xmlPullParserFactory = XmlPullParserFactory.newInstance();
@@ -68,7 +68,7 @@ public class GPXHelper {
      */
     private static TimedPoint parsePoint(XmlPullParser parser) throws IOException, XmlPullParserException {
         double lat, lon;
-        Date time = null;
+        Date time;
         parser.require(XmlPullParser.START_TAG, null, TAG_POINT);
         lat = Double.valueOf(parser.getAttributeValue(null, TAG_LAT));
         lon = Double.valueOf(parser.getAttributeValue(null, TAG_LON));
@@ -88,7 +88,8 @@ public class GPXHelper {
      https://developer.android.com/training/basics/network-ops/xml.html#skip
      It recursively skips tags (and their bodies) that we don't care about.
         Ie:
-        we can skip the whole medatata tag with one call to skip
+        we can skip the whole medatata tag with one call to skip rather than
+        having to keep track of the depth of the xml inside the tag.
 
         <metadata>
             <link href="http://www.garmin.com">

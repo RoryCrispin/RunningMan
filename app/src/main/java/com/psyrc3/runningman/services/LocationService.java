@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
+
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -11,6 +12,8 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+
+import com.psyrc3.runningman.broadcast_receivers.LowBatteryReceiver;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -31,33 +34,34 @@ public class LocationService extends Service implements LocationListener {
     private final IBinder mBinder = new LocationBinder();
     boolean isRecording;
     LocationManager locationManager;
-    NotificationHelper notificationHelper;
     NotificationManager notificationManager;
-    private boolean activityIsSubscribed = false;
     private PathKeeper path;
     private LocationServiceCallbacks lsCallbacks;
+    private LowBatteryReceiver lowBatteryReceiver;
 
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
 
+    // We've already checked for permissions so we can ignore the warning here.
     @SuppressLint("MissingPermission")
     @Override
     public void onCreate() {
         super.onCreate();
         path = new PathKeeper();
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationHelper = new NotificationHelper();
         startForeground(noticationID,
-                notificationHelper.generateNotification(this,
+                NotificationHelper.generateNotification(this,
                         "Not recording"));
         locationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        //TODO: Check permissions!
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 1, 1, this);
+
+        lowBatteryReceiver = new LowBatteryReceiver();
+        lowBatteryReceiver.registerReceiver(this);
     }
 
     public void setCallbacks(LocationServiceCallbacks lsCallbacks) {
@@ -69,6 +73,7 @@ public class LocationService extends Service implements LocationListener {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.cancel(noticationID);
+        lowBatteryReceiver.unregisterReceiver(this);
         super.onDestroy();
     }
 
@@ -84,7 +89,7 @@ public class LocationService extends Service implements LocationListener {
             if (isRecording) {
                 path.addPoint(location);
                 // Update the notification to reflect activity progress
-                notificationManager.notify(noticationID, notificationHelper.recordingNotification(this,
+                notificationManager.notify(noticationID, NotificationHelper.recordingNotification(this,
                         path.getRecentAvgPace(), path.getDistance()));
             }
             // Notify bound activities of new location
@@ -110,7 +115,6 @@ public class LocationService extends Service implements LocationListener {
     public void stopRecording() {
         isRecording = false;
         locationManager.removeUpdates(this);
-        // TODO: not removing notification
         notificationManager.cancel(noticationID);
     }
 

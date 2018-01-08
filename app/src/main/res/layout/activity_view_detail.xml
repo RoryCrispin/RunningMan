@@ -24,13 +24,25 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/achievement_tv" />
+
+    <TextView
+        android:id="@+id/achievement_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="No achievements this time"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description_tv" />
+
 
     <TextView
         android:id="@+id/description_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+
         android:layout_marginTop="8dp"
         android:text="Run on Wednesday 5th June, 10pm"
         app:layout_constraintStart_toStartOf="parent"
@@ -80,5 +92,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_edit_black_24dp" />
+
+
 
 </android.support.constraint.ConstraintLayout>

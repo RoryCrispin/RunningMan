@@ -78,6 +78,7 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // TODO: Request doze whitelist
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recording);
 
@@ -85,13 +86,25 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
             onCreateWithPermissions();
         }
 
-
-
         // Initialise the UI elements
         distance_tv = findViewById(R.id.distance_tv);
         pace_tv = findViewById(R.id.pace_tv);
         time_tv = findViewById(R.id.time_tv);
         startStopButton = findViewById(R.id.startStop_tb);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!mBound && PermissionHelper.isLocationPermissionGrated(this)) {
+            Intent serviceIntent = new Intent(this, LocationService.class);
+            bindService(serviceIntent, mConnection, 0);
+        }
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            conformStopRecording();
+        }
     }
 
 
@@ -149,18 +162,6 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
         mapView.getOverlays().add(runningTackLine);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (!mBound && PermissionHelper.isLocationPermissionGrated(this)) {
-            Intent serviceIntent = new Intent(this, LocationService.class);
-            bindService(serviceIntent, mConnection, 0);
-        }
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            conformStopRecording();
-        }
-    }
 
     // Resume the UI state from the service
     private void resumeActivityState() {

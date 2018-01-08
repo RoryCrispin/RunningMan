@@ -14,8 +14,8 @@ import com.psyrc3.runningman.activities.NewRecording;
     This class moves notification generation code away from the service file, keeping it tidy.
  */
 
-class NotificationHelper {
-    Notification generateNotification(Context c, String sub) {
+public class NotificationHelper {
+    public static Notification generateNotification(Context c, String sub) {
         return new NotificationCompat.Builder(c, "runningman")
                 .setSmallIcon(R.drawable.ic_run_man_black_24dp)
                 .setContentTitle("RunningMan")
@@ -25,8 +25,7 @@ class NotificationHelper {
                         PendingIntent.FLAG_UPDATE_CURRENT)).build();
     }
 
-
-    Notification recordingNotification(Context c, double pace, double distance) {
+    static Notification recordingNotification(Context c, double pace, double distance) {
         Intent stopIntent = new Intent(c, NewRecording.class);
         stopIntent.putExtra("requestCode", 99);
 
@@ -43,8 +42,5 @@ class NotificationHelper {
                 .setContentIntent(PendingIntent.getActivity(c, 1,
                         new Intent(c, NewRecording.class),
                         PendingIntent.FLAG_UPDATE_CURRENT)).build();
-
-
     }
-
 }

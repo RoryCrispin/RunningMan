@@ -27,7 +27,8 @@ public class LowBatteryReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Show a notification to the user that battery is low.
-            Notification bb = NotificationHelper.generateNotification(context, "Battery low, consider stopping activity!");
+            Notification bb = NotificationHelper.generateNotification(context,
+                    "Battery low, consider stopping workout!");
             NotificationManager notificationManager = (NotificationManager)
                     context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(0x22, bb);

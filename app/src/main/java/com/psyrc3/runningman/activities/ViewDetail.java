@@ -10,9 +10,10 @@ import android.widget.Toast;
 
 import com.psyrc3.runningman.R;
 import com.psyrc3.runningman.StravaSyncHelper;
-import com.psyrc3.runningman.activities.components.ActivityDetailTable;
-import com.psyrc3.runningman.providers.ActivityEntry;
-import com.psyrc3.runningman.providers.ActivityProviderContract;
+import com.psyrc3.runningman.activities.components.WorkoutDetailTable;
+import com.psyrc3.runningman.providers.WorkoutEntry;
+import com.psyrc3.runningman.providers.WorkoutProviderContract;
+import com.psyrc3.runningman.providers.achievements.AchievementHelper;
 import com.sweetzpot.stravazpot.authenticaton.ui.StravaLoginActivity;
 
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -28,12 +29,12 @@ import java.util.List;
 import java.util.Locale;
 
 /*
-    This activity shows detail about user Activities (runs/walks/rides)
+    This activity shows detail about user workouts (runs/walks/rides)
     and allows them to edit, delete or share them.
  */
 public class ViewDetail extends AppCompatActivity {
 
-    ActivityEntry activityEntry;
+    WorkoutEntry workoutEntry;
     MapView mapView;
 
     @Override
@@ -45,18 +46,18 @@ public class ViewDetail extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
                 int res_id = Integer.valueOf(extras.getString("res_id"));
-                activityEntry = new ActivityEntry(res_id, getContentResolver());
+                workoutEntry = new WorkoutEntry(res_id, getContentResolver());
                 updateIUState();
             }
         }
     }
 
     private void updateIUState() {
-        ActivityDetailTable detailTable = findViewById(R.id.detailsTable);
-        detailTable.setActivity(activityEntry);
-
-        ((TextView) findViewById(R.id.title_tv)).setText(activityEntry.title);
+        ((WorkoutDetailTable) findViewById(R.id.detailsTable)).setWorkout(workoutEntry);
+        ((TextView) findViewById(R.id.title_tv)).setText(workoutEntry.title);
         ((TextView) findViewById(R.id.description_tv)).setText(getActivityDescription());
+        ((TextView) findViewById(R.id.achievement_tv)).setText(
+                AchievementHelper.stringifyAchievements(workoutEntry, this.getContentResolver()));
 
         setupMapView();
     }
@@ -69,33 +70,32 @@ public class ViewDetail extends AppCompatActivity {
         mapView.setMultiTouchControls(true);
         mapView.getController().setZoom(15);
 
-        //Setup the PolyLine which will display the route of the activity
+        //Setup the PolyLine which will display the route of the workout
         Polyline runningTrackOverlay = new Polyline();
         final List<GeoPoint> runningTrackPoints = new ArrayList<>();
-        runningTrackPoints.addAll(activityEntry.path.getGeoPointPath());
+        runningTrackPoints.addAll(workoutEntry.path.getGeoPointPath());
         runningTrackOverlay.setPoints(runningTrackPoints);
         mapView.getOverlays().add(runningTrackOverlay);
 
-        // Center the screen on the activity
-        // TODO crashes for empty paths
-        if (activityEntry.path.getGeoPointPath().size() > 0) {
-            mapView.getController().setCenter(activityEntry.path.getGeoPointPath().get(0));
+        // Center the screen on the workout
+        if (workoutEntry.path.getGeoPointPath().size() > 0) {
+            mapView.getController().setCenter(workoutEntry.path.getGeoPointPath().get(0));
         }
     }
 
     private String getActivityDescription() {
-        Date date = new Date(activityEntry.date);
+        Date date = new Date(workoutEntry.date);
         DateFormat displayFormat = new SimpleDateFormat("E MMMM d, yyyy HH:mm", Locale.ENGLISH);
 
         return String.format(Locale.ENGLISH, "A %s on %s",
-                activityEntry.type.toLowerCase(), displayFormat.format(date));
+                workoutEntry.type.toLowerCase(), displayFormat.format(date));
     }
 
     public void uploadClicked(View view) {
-        // If the user has already authenticated, upload the activity, otherwise auth then upload
+        // If the user has already authenticated, upload the workout, otherwise auth then upload
         StravaSyncHelper stravaSyncHelper = new StravaSyncHelper();
         if (stravaSyncHelper.isAuthenticated(this)) {
-            stravaSyncHelper.shareActivity(this, activityEntry);
+            stravaSyncHelper.shareWorkout(this, workoutEntry);
         } else {
             startActivityForResult(stravaSyncHelper.getLoginIntent(this),
                     StravaSyncHelper.STRAVA_LOGIN_INTENT);
@@ -105,13 +105,13 @@ public class ViewDetail extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // If the result comes from the strava login, save the auth code and share the activity,
+        // If the result comes from the strava login, save the auth code and share the workout,
         // or show an auth failed toast.
         if (requestCode == StravaSyncHelper.STRAVA_LOGIN_INTENT) {
             if (resultCode == RESULT_OK && data != null) {
                 StravaSyncHelper stravaSyncHelper = new StravaSyncHelper();
                 stravaSyncHelper.saveAuthCode(this, data.getStringExtra(StravaLoginActivity.RESULT_CODE));
-                stravaSyncHelper.shareActivity(this, activityEntry);
+                stravaSyncHelper.shareWorkout(this, workoutEntry);
             } else {
                 Toast.makeText(this, "Authentication failed!", Toast.LENGTH_SHORT).show();
             }
@@ -119,29 +119,29 @@ public class ViewDetail extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 String title = data.getStringExtra("title");
                 String type = data.getStringExtra("type");
-                updateActivityProperties(activityEntry, title, type);
+                updateWorkoutProperties(workoutEntry, title, type);
             }
         }
     }
 
 
     public void editClicked(View view) {
-        Intent i = new Intent(this, ActivityProperties.class);
+        Intent i = new Intent(this, WorkoutProperties.class);
         startActivityForResult(i, 1);
     }
 
-    private void updateActivityProperties(ActivityEntry entry, String title, String type) {
+    private void updateWorkoutProperties(WorkoutEntry entry, String title, String type) {
         entry.title = title;
         entry.type = type;
-        getContentResolver().update(ActivityProviderContract.ACTIVITY_URI,
+        getContentResolver().update(WorkoutProviderContract.WORKOUT_URI,
                 entry.toContentValues(), null, null);
         updateIUState();
     }
 
     public void deleteClicked(View view) {
-        getContentResolver().delete(ActivityProviderContract.ACTIVITY_URI,
-                String.valueOf(activityEntry.id), null);
-        Intent i = new Intent(this, ListActivities.class);
+        getContentResolver().delete(WorkoutProviderContract.WORKOUT_URI,
+                String.valueOf(workoutEntry.id), null);
+        Intent i = new Intent(this, ListWorkouts.class);
         startActivity(i);
     }
 }

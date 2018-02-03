@@ -13,9 +13,9 @@ import com.psyrc3.runningman.ConversionHelper;
 /*
     This adapter is used to bind the database results to the ListView on the main activity.
  */
-public class ActivityAdapter extends CursorAdapter {
+public class WorkoutAdapter extends CursorAdapter {
 
-    public ActivityAdapter(Context context, Cursor c, int flags) {
+    public WorkoutAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }
 
@@ -32,9 +32,9 @@ public class ActivityAdapter extends CursorAdapter {
         TextView tvSubtitle = view.findViewById(android.R.id.text2);
 
         String title = cursor.getString(cursor.getColumnIndexOrThrow(
-                ActivityProviderContract.TITLE));
+                WorkoutProviderContract.TITLE));
         double distance = cursor.getDouble(cursor.getColumnIndexOrThrow(
-                ActivityProviderContract.DISTANCE));
+                WorkoutProviderContract.DISTANCE));
 
         title = filterString(title);
         title = truncateString(title, 20);

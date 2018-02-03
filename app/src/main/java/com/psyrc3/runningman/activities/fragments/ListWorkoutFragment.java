@@ -15,23 +15,23 @@ import android.widget.TextView;
 
 import com.psyrc3.runningman.R;
 import com.psyrc3.runningman.activities.ViewDetail;
-import com.psyrc3.runningman.providers.ActivityAdapter;
-import com.psyrc3.runningman.providers.ActivityProviderContract;
+import com.psyrc3.runningman.providers.WorkoutAdapter;
+import com.psyrc3.runningman.providers.WorkoutProviderContract;
 
-public class ListActivityFragment extends Fragment {
+public class ListWorkoutFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "listActivitySection";
     ListView activity_lv;
     TextView noActivities;
 
-    public ListActivityFragment() {
+    public ListWorkoutFragment() {
     }
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static ListActivityFragment newInstance(int sectionNumber) {
-        ListActivityFragment fragment = new ListActivityFragment();
+    public static ListWorkoutFragment newInstance(int sectionNumber) {
+        ListWorkoutFragment fragment = new ListWorkoutFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
@@ -41,11 +41,10 @@ public class ListActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_list_activities, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_list_workouts, container, false);
         noActivities = rootView.findViewById(R.id.emptylist_msg);
-        activity_lv = rootView.findViewById(R.id.activities_lv);
+        activity_lv = rootView.findViewById(R.id.workouts_lv);
         activity_lv.setNestedScrollingEnabled(true);
-//        populateListView();
 
         activity_lv.setOnItemClickListener(new ListView.OnItemClickListener() {
 
@@ -71,18 +70,18 @@ public class ListActivityFragment extends Fragment {
 
     private void populateListView() {
 
-        Cursor activityCursor = getActivity().getContentResolver().query(ActivityProviderContract.ALL_ACTIVITIES,
-                null, activityType(getArguments().getInt(ARG_SECTION_NUMBER)),
+        Cursor activityCursor = getActivity().getContentResolver().query(WorkoutProviderContract.ALL_ACTIVITIES,
+                null, workoutType(getArguments().getInt(ARG_SECTION_NUMBER)),
                 null, null);
-        ActivityAdapter activityAdapter = new ActivityAdapter(getContext(), activityCursor, 0);
-        activity_lv.setAdapter(activityAdapter);
+        WorkoutAdapter workoutAdapter = new WorkoutAdapter(getContext(), activityCursor, 0);
+        activity_lv.setAdapter(workoutAdapter);
 
         if (activityCursor.getCount() > 0) {
             noActivities.setVisibility(View.INVISIBLE);
         }
     }
 
-    String activityType(int i) {
+    String workoutType(int i) {
         switch (i) {
             case 1:
                 return "*";
@@ -91,7 +90,7 @@ public class ListActivityFragment extends Fragment {
             case 3:
                 return "Walk";
             case 4:
-                return "Ride";
+                return "Cycle";
         }
         return null;
     }

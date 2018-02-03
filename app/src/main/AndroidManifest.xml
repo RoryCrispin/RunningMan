@@ -21,19 +21,19 @@
 
         <service android:name=".services.LocationService" />
 
-        <activity android:name=".activities.SaveActivity" />
+        <activity android:name=".activities.SaveWorkout" />
         <activity
-            android:name=".activities.ActivityProperties"
+            android:name=".activities.WorkoutProperties"
             android:theme="@style/Theme.AppCompat.Dialog.Alert" />
 
         <provider
-            android:name=".providers.ActivityProvider"
-            android:authorities="com.psyrc3.runningman.providers.ActivityProvider"
+            android:name=".providers.WorkoutProvider"
+            android:authorities="com.psyrc3.runningman.providers.WorkoutProvider"
             android:exported="false"
             android:multiprocess="true" />
 
         <activity
-            android:name=".activities.ListActivities"
+            android:name=".activities.ListWorkouts"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

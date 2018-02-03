@@ -3,11 +3,11 @@ package com.psyrc3.runningman.providers;
 
 import android.net.Uri;
 
-public class ActivityProviderContract {
-    public static final String AUTHORITY = "com.psyrc3.runningman.providers.ActivityProvider";
+public class WorkoutProviderContract {
+    public static final String AUTHORITY = "com.psyrc3.runningman.providers.WorkoutProvider";
 
-    public static final Uri ACTIVITY_URI = Uri.parse("content://" + AUTHORITY + "/activity");
-    public static final Uri ALL_ACTIVITIES = Uri.parse("content://" + AUTHORITY + "/activities");
+    public static final Uri WORKOUT_URI = Uri.parse("content://" + AUTHORITY + "/workout");
+    public static final Uri ALL_ACTIVITIES = Uri.parse("content://" + AUTHORITY + "/workouts");
 
     public static final String ID = "_id";
     public static final String TITLE = "title";

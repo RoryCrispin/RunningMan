@@ -13,6 +13,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 
+import com.psyrc3.runningman.activities.SaveWorkout;
 import com.psyrc3.runningman.broadcast_receivers.LowBatteryReceiver;
 
 import org.osmdroid.util.GeoPoint;
@@ -70,8 +71,6 @@ public class LocationService extends Service implements LocationListener {
 
     @Override
     public void onDestroy() {
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.cancel(noticationID);
         lowBatteryReceiver.unregisterReceiver(this);
         super.onDestroy();
@@ -88,7 +87,7 @@ public class LocationService extends Service implements LocationListener {
         if (location != null) {
             if (isRecording) {
                 path.addPoint(location);
-                // Update the notification to reflect activity progress
+                // Update the notification to reflect workout progress
                 notificationManager.notify(noticationID, NotificationHelper.recordingNotification(this,
                         path.getRecentAvgPace(), path.getDistance()));
             }
@@ -115,7 +114,10 @@ public class LocationService extends Service implements LocationListener {
     public void stopRecording() {
         isRecording = false;
         locationManager.removeUpdates(this);
-        notificationManager.cancel(noticationID);
+        // Update the notification to show the progress.
+        notificationManager.notify(noticationID, NotificationHelper.generateNotification(this,
+                "Save your workout!", new Intent(this, SaveWorkout.class)));
+
     }
 
     public long getTimeElapsed() {

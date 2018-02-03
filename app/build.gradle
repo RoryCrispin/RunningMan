@@ -30,5 +30,4 @@ dependencies {
     compile 'org.osmdroid:osmdroid-android:5.6.4'
     compile 'com.jjoe64:graphview:4.2.1'
     compile 'com.sweetzpot.stravazpot:lib:1.2'
-    compile 'io.ticofab.androidgpxparser:parser:1.1.0'
 }

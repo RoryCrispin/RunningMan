@@ -8,22 +8,22 @@ import android.widget.TextView;
 
 import com.psyrc3.runningman.ConversionHelper;
 import com.psyrc3.runningman.R;
-import com.psyrc3.runningman.providers.ActivityEntry;
+import com.psyrc3.runningman.providers.WorkoutEntry;
 import com.psyrc3.runningman.services.PathKeeper;
 
 
 /*
-    This UI component aggregates the speed, distance and time of an activity
+    This UI component aggregates the speed, distance and time of a workout
     into a single UI component that jsut takes a PathKeeper object as input and handles
     setting up it's own UI state.
 
     It exists to move some ui state code away from the Activities and make a reusable
-    component that we can use on the 'Save Activity' and 'View Detail' screens simply
+    component that we can use on the 'Save Workout' and 'View Detail' screens simply
     and without code duplication.
 
  */
-public class ActivityDetailTable extends TableLayout {
-    public ActivityDetailTable(Context context) {
+public class WorkoutDetailTable extends TableLayout {
+    public WorkoutDetailTable(Context context) {
         super(context);
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -31,14 +31,14 @@ public class ActivityDetailTable extends TableLayout {
 
     }
 
-    public ActivityDetailTable(Context context, AttributeSet attrs) {
+    public WorkoutDetailTable(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.activity_detail_table, this);
     }
 
-    public void setActivity(PathKeeper path) {
+    public void setWorkout(PathKeeper path) {
         ((TextView) findViewById(R.id.speed_tv))
                 .setText(ConversionHelper.paceToString(path.getAvgPace()));
 
@@ -49,7 +49,7 @@ public class ActivityDetailTable extends TableLayout {
                 .setText(ConversionHelper.millisElapsedToTimer(path.getTimeElapsed()));
     }
 
-    public void setActivity(ActivityEntry entry) {
+    public void setWorkout(WorkoutEntry entry) {
         ((TextView) findViewById(R.id.speed_tv))
                 .setText(ConversionHelper.paceToString(entry.avgPace));
 

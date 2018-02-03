@@ -16,14 +16,19 @@ import com.psyrc3.runningman.activities.NewRecording;
 
 public class NotificationHelper {
     public static Notification generateNotification(Context c, String sub) {
+        return generateNotification(c, sub, new Intent(c, NewRecording.class));
+    }
+
+    public static Notification generateNotification(Context c, String sub, Intent intent) {
         return new NotificationCompat.Builder(c, "runningman")
                 .setSmallIcon(R.drawable.ic_run_man_black_24dp)
                 .setContentTitle("RunningMan")
                 .setContentText(sub)
                 .setContentIntent(PendingIntent.getActivity(c, 1,
-                        new Intent(c, NewRecording.class),
+                        intent,
                         PendingIntent.FLAG_UPDATE_CURRENT)).build();
     }
+
 
     static Notification recordingNotification(Context c, double pace, double distance) {
         Intent stopIntent = new Intent(c, NewRecording.class);

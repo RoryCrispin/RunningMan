@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 /*
-    This path stores activity paths and provides utility functions to calculate pace,
+    This path stores workout paths and provides utility functions to calculate pace,
     distance, time, ect.
     It keeps a running total of the distance which is incremented with every new point
     so we don't have to read every single point on every call to getDistance()
@@ -64,6 +64,8 @@ public class PathKeeper {
         return 16.666667 / (distanceFromPoint / timeBetween) / 1000;
     }
 
+    // Get the average pace of a set of recent points,
+    // useful for displaying the user their current pace during the workout.
     double getRecentAvgPace() {
         if (path.size() > 4) {
             TimedPoint lastPoint = path.get(path.size() - 1);
@@ -73,6 +75,7 @@ public class PathKeeper {
         return 0;
     }
 
+    // Get the pace of the entire workout for displaying in the details screens.
     public double getAvgPace() {
         if (path.size() > 1) {
             TimedPoint lastPoint = path.get(path.size() - 1);
@@ -83,7 +86,8 @@ public class PathKeeper {
     }
 
 
-
+    // Get a list of the pace over the entire workout, this can be displayed
+    // on the line chart.
     public List<Double> getIncrementalPace() {
         List<Double> list = new ArrayList<>();
         int i = 1;
@@ -109,7 +113,7 @@ public class PathKeeper {
         for (TimedPoint p : path) {
             body.append(p.reprGPX());
         }
-        return String.format(Locale.ENGLISH, "%s <trk> <name>RunningManActivity</name><time>%s</time>" +
+        return String.format(Locale.ENGLISH, "%s <trk> <name>RunningManWorkout</name><time>%s</time>" +
                         "<trkseg>%s</trkseg></trk></gpx>", GPXHelper.header,
                 GPXHelper.df.format(new Date(getStartTime())), body.toString());
     }

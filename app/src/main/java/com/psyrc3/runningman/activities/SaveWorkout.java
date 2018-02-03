@@ -10,17 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.psyrc3.runningman.R;
-import com.psyrc3.runningman.activities.components.ActivityDetailTable;
+import com.psyrc3.runningman.activities.components.WorkoutDetailTable;
 import com.psyrc3.runningman.activities.components.PaceGraph;
-import com.psyrc3.runningman.providers.ActivityEntry;
-import com.psyrc3.runningman.providers.ActivityProviderContract;
+import com.psyrc3.runningman.providers.WorkoutEntry;
+import com.psyrc3.runningman.providers.WorkoutProviderContract;
 import com.psyrc3.runningman.services.LocationService;
 
 /*
-    This activity is shown after recording an activity. It shows details about the activity and
-    offers the user Saving and Discarding of the activity.
+    This activity is shown after recording a workout. It shows details about the workout and
+    offers the user Saving and Discarding of the workout.
  */
-public class SaveActivity extends AppCompatActivity {
+public class SaveWorkout extends AppCompatActivity {
 
     boolean mBound;
     LocationService locationService;
@@ -49,15 +49,15 @@ public class SaveActivity extends AppCompatActivity {
     }
 
     private void updateUIValues() {
-        ActivityDetailTable detailTable = findViewById(R.id.detailsTable);
-        detailTable.setActivity(locationService.getPath());
+        WorkoutDetailTable detailTable = findViewById(R.id.detailsTable);
+        detailTable.setWorkout(locationService.getPath());
 
         ((PaceGraph) findViewById(R.id.graph))
                 .setPath(locationService.getPath());
     }
 
     public void saveClicked(View v) {
-        Intent i = new Intent(this, ActivityProperties.class);
+        Intent i = new Intent(this, WorkoutProperties.class);
         startActivityForResult(i, 1);
     }
 
@@ -67,15 +67,15 @@ public class SaveActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 String title = data.getStringExtra("title");
                 String type = data.getStringExtra("type");
-                saveActivity(title, type);
+                saveWorkout(title, type);
             }
         }
     }
 
-    private void saveActivity(String title, String type) {
-        ActivityEntry activityEntry = new ActivityEntry(title, type, locationService.getPath());
-        getContentResolver().insert(ActivityProviderContract.ACTIVITY_URI,
-                activityEntry.toContentValues());
+    private void saveWorkout(String title, String type) {
+        WorkoutEntry workoutEntry = new WorkoutEntry(title, type, locationService.getPath());
+        getContentResolver().insert(WorkoutProviderContract.WORKOUT_URI,
+                workoutEntry.toContentValues());
         closeServiceGoHome();
     }
 
@@ -93,7 +93,7 @@ public class SaveActivity extends AppCompatActivity {
         Intent service = new Intent(this, LocationService.class);
         stopService(service);
         // Return to the home screen
-        Intent i = new Intent(this, ListActivities.class);
+        Intent i = new Intent(this, ListWorkouts.class);
         startActivity(i);
     }
 

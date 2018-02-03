@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.psyrc3.runningman.activities.ActivityProperties">
+    tools:context="com.psyrc3.runningman.activities.WorkoutProperties">
 
     <EditText
         android:id="@+id/title_et"
@@ -13,13 +13,13 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Activity Title"
+        android:hint="Workout Title"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/activity_spinner"
+        android:id="@+id/workout_spinner"
         android:layout_width="368dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -38,5 +38,5 @@
         android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/workout_spinner" />
 </android.support.constraint.ConstraintLayout>

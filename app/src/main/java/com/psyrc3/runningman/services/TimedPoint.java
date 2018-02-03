@@ -28,9 +28,10 @@ public class TimedPoint {
         return System.currentTimeMillis() - this.time;
     }
 
-    // Return a GPX XML representation of this class.
+    // Return a GPX XML representation of this object.
     String reprGPX() {
-        return (String.format(Locale.ENGLISH, "<trkpt lat=\"%.6f\" lon=\"%.6f\"> <time>%s</time> </trkpt>\n",
+        return (String.format(Locale.ENGLISH, "<trkpt lat=\"%.6f\" lon=\"%.6f\"> <time>%s</time>" +
+                        " </trkpt>\n",
                 loc.getLatitude(), loc.getLongitude(),
                 GPXHelper.df.format(new Date(time))));
     }

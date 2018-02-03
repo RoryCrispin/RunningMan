@@ -12,12 +12,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Activity Title"
+        android:text="Workout Title"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.psyrc3.runningman.activities.components.ActivityDetailTable
+    <com.psyrc3.runningman.activities.components.WorkoutDetailTable
         android:id="@+id/detailsTable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

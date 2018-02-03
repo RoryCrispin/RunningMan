@@ -13,11 +13,11 @@ import android.widget.Toast;
 import com.psyrc3.runningman.R;
 
 /*
-    This activity is used to set the Activity type and name, returning them as Intent Extras.
+    This activity is used to set the workout type and name, returning them as Intent Extras.
     It's displayed as a popup view and used by the Save and Edit workflows.
  */
 
-public class ActivityProperties extends AppCompatActivity {
+public class WorkoutProperties extends AppCompatActivity {
 
     EditText title_et;
     Spinner spinner;
@@ -28,7 +28,7 @@ public class ActivityProperties extends AppCompatActivity {
         setContentView(R.layout.activity_properties);
 
         // Setup the spinner with default values
-        spinner = findViewById(R.id.activity_spinner);
+        spinner = findViewById(R.id.workout_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.activity_types, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

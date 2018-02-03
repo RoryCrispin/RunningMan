@@ -21,14 +21,14 @@ import android.widget.Toast;
 
 import com.psyrc3.runningman.PermissionHelper;
 import com.psyrc3.runningman.R;
-import com.psyrc3.runningman.activities.fragments.ListActivityFragment;
+import com.psyrc3.runningman.activities.fragments.ListWorkoutFragment;
 
-public class ListActivities extends AppCompatActivity {
+public class ListWorkouts extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_activities);
+        setContentView(R.layout.activity_list_workouts);
 
         PermissionHelper.checkRequestStoragePermission(this);
 
@@ -41,7 +41,7 @@ public class ListActivities extends AppCompatActivity {
         spinner.setAdapter(new ActivitySpinnerAdapter(
                 toolbar.getContext(),
                 new String[]{
-                        "All Activities",
+                        "All Workouts",
                         "Runs",
                         "Walks",
                         "Rides"
@@ -53,7 +53,7 @@ public class ListActivities extends AppCompatActivity {
                 // When the given dropdown item is selected, show its contents in the
                 // container view.
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, ListActivityFragment.newInstance(position + 1))
+                        .replace(R.id.container, ListWorkoutFragment.newInstance(position + 1))
                         .commit();
             }
 

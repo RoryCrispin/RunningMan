@@ -35,7 +35,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /*
-    This activity is the main screen used when recording activitues.
+    This activity is the main screen used when recording workouts.
  */
 
 public class NewRecording extends AppCompatActivity implements LocationService.LocationServiceCallbacks {
@@ -230,7 +230,7 @@ public class NewRecording extends AppCompatActivity implements LocationService.L
                     timer.cancel();
 
                     //Open the save activity
-                    Intent i = new Intent(getApplicationContext(), SaveActivity.class);
+                    Intent i = new Intent(getApplicationContext(), SaveWorkout.class);
                     startActivity(i);
                 }
 

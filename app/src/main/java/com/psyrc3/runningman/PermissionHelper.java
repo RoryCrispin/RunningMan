@@ -12,12 +12,11 @@ public class PermissionHelper {
     public static int G53MDP_REQUEST_PERMISSION_LOCATION = 0x102;
 
 
-    public static boolean checkRequestStoragePermission(Activity ctx) {
+    public static void checkRequestStoragePermission(Activity ctx) {
         if (isStoragePermissionGranted(ctx)) {
-            return true;
+            return;
         }
         requestStoragePermission(ctx);
-        return false;
     }
 
 
@@ -41,19 +40,16 @@ public class PermissionHelper {
                 == PackageManager.PERMISSION_GRANTED);
     }
 
-    public static void requestStoragePermission(Activity ctx) {
+    private static void requestStoragePermission(Activity ctx) {
         ActivityCompat.requestPermissions(ctx,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 G53MDP_REQUEST_PERMISSION_EXT_STORAGE);
     }
 
-    public static void requestLocationPermission(Activity ctx) {
+    private static void requestLocationPermission(Activity ctx) {
         ActivityCompat.requestPermissions(ctx,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 G53MDP_REQUEST_PERMISSION_LOCATION);
-    }
-
-    public void handle_permission_response() {
     }
 
 }

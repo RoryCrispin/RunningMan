@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
-import com.psyrc3.runningman.providers.ActivityEntry;
+import com.psyrc3.runningman.providers.WorkoutEntry;
 import com.sweetzpot.stravazpot.authenticaton.api.AccessScope;
 import com.sweetzpot.stravazpot.authenticaton.api.ApprovalPrompt;
 import com.sweetzpot.stravazpot.authenticaton.api.AuthenticationAPI;
@@ -79,7 +79,7 @@ public class StravaSyncHelper {
                 .build();
     }
 
-    public void shareActivity(Activity c, final ActivityEntry activityEntry) {
+    public void shareWorkout(Activity c, final WorkoutEntry workoutEntry) {
         final Activity fc = c;
         // Run the network code off from the UI thread so that the UI remains smooth.
         Thread t = new Thread(new Runnable() {
@@ -89,7 +89,7 @@ public class StravaSyncHelper {
                     // Write to a temporary file before uploading
                     OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fc.openFileOutput(
                             "upload.gpx", Context.MODE_PRIVATE));
-                    outputStreamWriter.write(activityEntry.track);
+                    outputStreamWriter.write(workoutEntry.track);
                     outputStreamWriter.close();
 
 
@@ -97,8 +97,8 @@ public class StravaSyncHelper {
                     UploadAPI uploadAPI = new UploadAPI(getConfig(fc));
                     uploadAPI.uploadFile(new File(fc.getFilesDir(), "upload.gpx"))
                             .withDataType(DataType.GPX)
-                            .withActivityType(getType(activityEntry.type))
-                            .withName(activityEntry.title)
+                            .withActivityType(getType(workoutEntry.type))
+                            .withName(workoutEntry.title)
                             .withDescription("No description")
                             .isPrivate(false)
                             .hasTrainer(false)
